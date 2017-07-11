@@ -322,7 +322,7 @@ do
 
     [MATCH_RULES.URI] = function(api_t, ctx)
       do
-        local uri     = ctx.uri_prefix or ctx.uri_regex or ctx.uri
+        local uri     = ctx.uri_regex or ctx.uri_prefix or ctx.uri
         local regex_t = api_t.uris[uri]
 
         if regex_t then
@@ -442,7 +442,7 @@ do
     end,
 
     [MATCH_RULES.URI] = function(category, ctx)
-      local uri = ctx.uri_prefix or ctx.uri_regex or ctx.uri
+      local uri = ctx.uri_regex or ctx.uri_prefix or ctx.uri
 
       return category.apis_by_uris[uri]
     end,
@@ -650,19 +650,17 @@ function _M.new(apis)
         end
       end
 
-      if not ctx.uri_prefix then
-        for i = 1, #uris_regexes do
-          local from, _, err = re_find(uri, uris_regexes[i].regex, "ajo")
-          if err then
-            log(ERR, "could not evaluate URI regex: ", err)
-            return
-          end
+      for i = 1, #uris_regexes do
+        local from, _, err = re_find(uri, uris_regexes[i].regex, "ajo")
+        if err then
+          log(ERR, "could not evaluate URI regex: ", err)
+          return
+        end
 
-          if from then
-            ctx.uri_regex = uris_regexes[i].value
-            req_category  = bor(req_category, MATCH_RULES.URI)
-            break
-          end
+        if from then
+          ctx.uri_regex = uris_regexes[i].value
+          req_category  = bor(req_category, MATCH_RULES.URI)
+          break
         end
       end
     end

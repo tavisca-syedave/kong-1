@@ -306,6 +306,25 @@ describe("Router", function()
         assert.truthy(api_t)
         assert.same(use_case[1], api_t.api)
       end)
+
+      it("matches a [uri regex] even if a [prefix uri] got a match", function()
+        local use_case = {
+          {
+            name = "api-1",
+            uris = { [[/api/persons]] },
+          },
+          {
+            name = "api-2",
+            uris = { [[/api/persons/\d+/profile]] },
+          },
+        }
+
+        local router = assert(Router.new(use_case))
+
+        local api_t = router.select("GET", "/api/persons/123/profile")
+        assert.truthy(api_t)
+        assert.same(use_case[2], api_t.api)
+      end)
     end)
 
     describe("[wildcard host]", function()
