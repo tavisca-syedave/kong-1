@@ -107,14 +107,14 @@ local function do_authentication(conf)
       break
     elseif type(v) == "table" then
       -- duplicate API key, HTTP 401
-      return false, {status = 401, message = "Duplicate API key found"}
+      return false, {status = 401, code="683", message = "You cannot provide multiple API keys in the request."}
     end
   end
 
   -- this request is missing an API key, HTTP 401
   if not key then
     ngx.header["WWW-Authenticate"] = _realm
-    return false, { status = 401, message = "No API key found in request" }
+    return false, { status = 401, code="682", message = "The API key must be provided in the request." }
   end
 
   -- retrieve our consumer linked to this API key
@@ -126,7 +126,7 @@ local function do_authentication(conf)
 
   -- no credential in DB, for this key, it is invalid, HTTP 403
   if not credential then
-    return false, {status = 403, message = "Invalid authentication credentials"}
+    return false, {status = 403, code="684", message = "Invalid API key provided in the request."}
   end
 
   -----------------------------------------

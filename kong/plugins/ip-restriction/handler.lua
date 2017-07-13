@@ -79,7 +79,7 @@ function IpRestrictionHandler:access(conf)
   end
 
   if block then
-    return responses.send_HTTP_FORBIDDEN("Your IP address is not allowed")
+    return responses.send_HTTP_FORBIDDEN(code="686", message="You cannot make API calls as your IP address has not been added to the whitelist. Please contact the administrator.")
   end
 end
 

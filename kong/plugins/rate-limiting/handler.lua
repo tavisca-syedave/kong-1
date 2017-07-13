@@ -104,7 +104,7 @@ function RateLimitingHandler:access(conf)
 
     -- If limit is exceeded, terminate the request
     if stop then
-      return responses.send(429, "API rate limit exceeded")
+      return responses.send(429,code="685", message="You have exceeded the API rate limit. Try again after some time.")
     end
   end
 
